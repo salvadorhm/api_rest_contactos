@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+import pandas as pd
+
 app = FastAPI()
 
 
@@ -9,8 +11,9 @@ async def root():
 
 @app.get("/v1/contactos")
 async def get_contactos():
-    # TODO read contactos.csv
-    # TODO JSON encode contactos.csv
-    # TODO save in response
-    response = []
+    # Leer el archivo CSV
+    with open("contactos.csv", "r") as f:
+        df = pd.read_csv(f)
+    # JSON encode contactos.csv
+    response = df.to_dict("records")
     return response
