@@ -1,10 +1,14 @@
 from fastapi import FastAPI
 from fastapi import status
+from pydantic import BaseModel
 
 import pandas as pd
 
 app = FastAPI()
 
+class Contacto(BaseModel):
+    nombre : str
+    email : str
 
 @app.get(
         "/",
@@ -20,7 +24,10 @@ async def root():
     """
     return {"message": "Hello World"}
 
-@app.get("/v1/contactos")
+@app.get(
+        "/v1/contactos",
+        status_code=202
+        )
 async def get_contactos():
     # Leer el archivo CSV
     with open("contactos.csv", "r") as f:
@@ -28,3 +35,7 @@ async def get_contactos():
     # JSON encode contactos.csv
     response = df.to_dict("records")
     return response
+
+@app.post("/v1/contactos")
+async def post_contactos(contacto: Contacto):
+    return contacto
